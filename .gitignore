@@ -1,0 +1,40 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+
+# Database
+*.db
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+
+# Test
+coverage/
+
+# Frontend (separate repo or deployed separately)
+frontend/
+
+# Misc
+.claude/
+*.tsbuildinfo
+.next/
+node_modules

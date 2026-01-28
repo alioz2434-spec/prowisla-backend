@@ -1,0 +1,24 @@
+databases:
+  - name: prowisla-db
+    plan: free
+    databaseName: prowisla
+    user: prowisla
+
+services:
+  - type: web
+    name: prowisla-api
+    plan: free
+    runtime: node
+    buildCommand: npm install && npm run build
+    startCommand: npm run start:prod
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 3001
+      - key: JWT_SECRET
+        generateValue: true
+      - key: DATABASE_URL
+        fromDatabase:
+          name: prowisla-db
+          property: connectionString
