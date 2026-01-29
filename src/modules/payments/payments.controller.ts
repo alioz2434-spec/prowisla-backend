@@ -14,7 +14,7 @@ import type { Request, Response } from 'express';
 import { ShopierService, ShopierPaymentData } from './shopier.service';
 import { OrdersService } from '../orders/orders.service';
 import { Public } from '../../common/decorators/public.decorator';
-import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { OptionalJwtAuthGuard } from '../auth/guards/optional-jwt-auth.guard';
 import { ConfigService } from '@nestjs/config';
 
 @ApiTags('payments')
@@ -26,32 +26,24 @@ export class PaymentsController {
     private readonly configService: ConfigService,
   ) {}
 
+  @Public()
   @Post('shopier/create')
-  @UseGuards(JwtAuthGuard)
-  @ApiBearerAuth()
   @ApiOperation({ summary: 'Create Shopier payment form' })
   async createShopierPayment(
     @Body() body: { orderId: string },
-    @Req() req: Request,
   ) {
-    const user = req.user as any;
     const order = await this.ordersService.findById(body.orderId);
 
     if (!order) {
       return { success: false, message: 'Sipariş bulunamadı' };
     }
 
-    // Check if order belongs to user or is a guest order
-    if (order.userId && order.userId !== user?.id) {
-      return { success: false, message: 'Bu siparişe erişim yetkiniz yok' };
-    }
-
     const paymentData: ShopierPaymentData = {
       buyer: {
-        id: user?.id || order.id,
+        id: order.userId || order.id,
         firstName: order.shippingFirstName,
         lastName: order.shippingLastName,
-        email: order.shippingEmail || user?.email || 'guest@prowisla.com',
+        email: order.shippingEmail || 'guest@prowisla.com',
         phone: order.shippingPhone,
       },
       billingAddress: {

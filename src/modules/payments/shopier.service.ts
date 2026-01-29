@@ -79,7 +79,7 @@ export class ShopierService {
       'shipping_city': data.shippingAddress.city,
       'shipping_country': data.shippingAddress.country,
       'shipping_postcode': data.shippingAddress.postalCode,
-      'total_order_value': data.order.amount.toFixed(2),
+      'total_order_value': Number(data.order.amount).toFixed(2),
       'currency': currency.toString(),
       'platform': '0',
       'is_in_frame': '0',

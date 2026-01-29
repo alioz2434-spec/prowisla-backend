@@ -39,3 +39,4 @@ frontend/
 .next/
 node_modules
 .vercel
+.env*.local
