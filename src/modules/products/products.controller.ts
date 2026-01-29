@@ -38,17 +38,17 @@ export class ProductsController {
   }
 
   @Public()
-  @Get(':slug')
-  @ApiOperation({ summary: 'Slug ile ürün getir' })
-  findBySlug(@Param('slug') slug: string) {
-    return this.productsService.findBySlug(slug);
-  }
-
-  @Public()
   @Get(':id/related')
   @ApiOperation({ summary: 'İlgili ürünleri getir' })
   findRelated(@Param('id') id: string, @Query('limit') limit?: number) {
     return this.productsService.findRelated(id, limit);
+  }
+
+  @Public()
+  @Get(':slug')
+  @ApiOperation({ summary: 'Slug ile ürün getir' })
+  findBySlug(@Param('slug') slug: string) {
+    return this.productsService.findBySlug(slug);
   }
 
   @Post()
