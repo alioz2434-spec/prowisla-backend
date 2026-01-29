@@ -38,3 +38,4 @@ frontend/
 *.tsbuildinfo
 .next/
 node_modules
+.vercel
