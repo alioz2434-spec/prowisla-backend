@@ -59,6 +59,74 @@ export class OrdersService {
     return this.findById(savedOrder.id);
   }
 
+  async createGuestOrder(createOrderDto: CreateOrderDto): Promise<Order> {
+    if (!createOrderDto.items || createOrderDto.items.length === 0) {
+      throw new BadRequestException('Sipariş için ürün gerekli');
+    }
+
+    const orderNumber = this.generateOrderNumber();
+
+    // Calculate totals from provided items
+    let subtotal = 0;
+    const itemsWithDetails: Array<{
+      productId: string;
+      variantId?: string;
+      productName: string;
+      productImage?: string;
+      quantity: number;
+      price: number;
+      totalPrice: number;
+    }> = [];
+
+    for (const item of createOrderDto.items) {
+      const product = await this.productsService.findById(item.productId);
+      if (!product) {
+        throw new BadRequestException(`Ürün bulunamadı: ${item.productId}`);
+      }
+
+      const itemTotal = item.price * item.quantity;
+      subtotal += itemTotal;
+
+      itemsWithDetails.push({
+        productId: item.productId,
+        variantId: item.variantId,
+        productName: product.name,
+        productImage: product.mainImage,
+        quantity: item.quantity,
+        price: item.price,
+        totalPrice: itemTotal,
+      });
+    }
+
+    const shippingCost = this.calculateShipping(subtotal);
+    const codFee = createOrderDto.paymentMethod === 'cod' ? 9.90 : 0;
+    const totalAmount = subtotal + shippingCost + codFee;
+
+    // Remove items from DTO before spreading (items is for frontend only)
+    const { items: _, ...orderData } = createOrderDto;
+
+    const order = this.ordersRepository.create({
+      orderNumber,
+      ...orderData,
+      subtotal,
+      shippingCost,
+      totalAmount,
+    });
+
+    const savedOrder = await this.ordersRepository.save(order);
+
+    for (const itemData of itemsWithDetails) {
+      const orderItem = this.orderItemsRepository.create({
+        orderId: savedOrder.id,
+        ...itemData,
+      });
+      await this.orderItemsRepository.save(orderItem);
+      await this.productsService.updateStock(itemData.productId, itemData.quantity);
+    }
+
+    return this.findById(savedOrder.id);
+  }
+
   async findAll(userId: string): Promise<Order[]> {
     return this.ordersRepository.find({
       where: { userId },

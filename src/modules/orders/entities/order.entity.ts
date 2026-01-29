@@ -36,11 +36,11 @@ export class Order {
   @Column({ unique: true })
   orderNumber: string;
 
-  @ManyToOne(() => User, (user) => user.orders)
+  @ManyToOne(() => User, (user) => user.orders, { nullable: true })
   @JoinColumn({ name: 'userId' })
   user: User;
 
-  @Column()
+  @Column({ nullable: true })
   userId: string;
 
   @OneToMany(() => OrderItem, (item) => item.order, { cascade: true })

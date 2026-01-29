@@ -1,5 +1,25 @@
-import { IsString, IsOptional, IsEmail } from 'class-validator';
+import { IsString, IsOptional, IsEmail, IsArray, ValidateNested, IsNumber, IsUUID } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
+import { Type } from 'class-transformer';
+
+export class OrderItemDto {
+  @ApiProperty()
+  @IsUUID()
+  productId: string;
+
+  @ApiProperty({ required: false })
+  @IsOptional()
+  @IsUUID()
+  variantId?: string;
+
+  @ApiProperty()
+  @IsNumber()
+  quantity: number;
+
+  @ApiProperty()
+  @IsNumber()
+  price: number;
+}
 
 export class CreateOrderDto {
   @ApiProperty()
@@ -79,4 +99,11 @@ export class CreateOrderDto {
   @ApiProperty()
   @IsString()
   paymentMethod: string;
+
+  @ApiProperty({ required: false, type: [OrderItemDto] })
+  @IsOptional()
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => OrderItemDto)
+  items?: OrderItemDto[];
 }
