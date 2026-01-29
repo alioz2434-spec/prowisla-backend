@@ -13,6 +13,7 @@ import { BlogModule } from './modules/blog/blog.module';
 import { PagesModule } from './modules/pages/pages.module';
 import { SliderModule } from './modules/slider/slider.module';
 import { SettingsModule } from './modules/settings/settings.module';
+import { PaymentsModule } from './modules/payments/payments.module';
 
 @Module({
   imports: [
@@ -36,6 +37,7 @@ import { SettingsModule } from './modules/settings/settings.module';
     PagesModule,
     SliderModule,
     SettingsModule,
+    PaymentsModule,
   ],
 })
 export class AppModule {}

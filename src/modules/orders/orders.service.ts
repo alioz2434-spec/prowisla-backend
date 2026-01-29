@@ -89,6 +89,12 @@ export class OrdersService {
     return order;
   }
 
+  async updateByOrderNumber(orderNumber: string, data: Partial<Order>): Promise<Order> {
+    const order = await this.findByOrderNumber(orderNumber);
+    Object.assign(order, data);
+    return this.ordersRepository.save(order);
+  }
+
   async updateStatus(id: string, status: OrderStatus): Promise<Order> {
     const order = await this.findById(id);
     order.status = status;
