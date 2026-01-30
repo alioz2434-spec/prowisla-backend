@@ -44,10 +44,10 @@ export class ShopierService {
   private readonly websiteIndex: number = 1;
 
   constructor(private configService: ConfigService) {
-    this.apiKey = this.configService.get<string>('SHOPIER_API_KEY') || '';
-    this.apiSecret = this.configService.get<string>('SHOPIER_API_SECRET') || '';
-    this.callbackUrl = this.configService.get<string>('SHOPIER_CALLBACK_URL') ||
-      'https://prowisla.vercel.app/api/payments/shopier/callback';
+    this.apiKey = (this.configService.get<string>('SHOPIER_API_KEY') || '').trim();
+    this.apiSecret = (this.configService.get<string>('SHOPIER_API_SECRET') || '').trim();
+    this.callbackUrl = (this.configService.get<string>('SHOPIER_CALLBACK_URL') ||
+      'https://prowisla.vercel.app/api/payments/shopier/callback').trim();
   }
 
   generatePaymentForm(data: ShopierPaymentData): {
